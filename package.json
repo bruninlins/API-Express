@@ -1,0 +1,17 @@
+{
+  "name": "node-express",
+  "version": "1.0.0",
+  "description": "Aprendendo requisição HTTP com node express",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "Bruno Torres",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
