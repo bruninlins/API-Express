@@ -1,5 +1,7 @@
 <h1 align="center">📚 Node Express - API de Livros e Autores</h1>
 
+<br>
+
 Este projeto é uma API RESTful desenvolvida com Node.js, Express e MongoDB (via Mongoose), com o objetivo de praticar requisições HTTP, organização de código em camadas e tratamento robusto de erros.
 
 <br>
