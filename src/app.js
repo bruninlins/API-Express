@@ -1,6 +1,9 @@
 import express from "express";
+import cors from "cors"; // ✅ importa o cors
 import conectaNaDataBase from "./config/dbconnect.js";
 import routes from "./routes/index.js";
+import manipuladorDeErros from "./middlewares/manipuladorDeErros.js";
+import manipulador404 from "./middlewares/manipulador404.js";
 
 const conexao = await conectaNaDataBase();
 
@@ -13,13 +16,14 @@ conexao.once("open", () => {
 });
 
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+
 routes(app);
 
-/* Requisição de delete */
-app.delete("/livros/:id", (req, res) => {
-  const index = buscaLivros(req.params.id);
-  livros.splice(index, 1);
-  res.status(200).send("Livro removido com sucesso!");
-});
+app.use(manipulador404);
+
+app.use(manipuladorDeErros);
 
 export default app;

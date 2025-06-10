@@ -1,11 +1,15 @@
-import { autor } from "../models/Autor.js";
+import NaoEncontrado from "../erros/naoEcontrado.js";
+import { autor } from "../models/index.js";
 
 class AutorController {
   /* requisição de listar os dados */
-  static async listarAutores(req, res) {
+  static async listarAutores(req, res, next) {
     try {
-      const listaAutores = await autor.find({});
-      res.status(200).json(listaAutores);
+      const autorResultado = autor.find({});
+
+      req.resultado = autorResultado;
+
+      next();
     } catch (error) {
       res
         .status(500)
@@ -14,53 +18,61 @@ class AutorController {
   }
 
   /* requisição de busca de dados */
-  static async listarAutorPorId(req, res) {
+  static async listarAutorPorId(req, res, next) {
     try {
       const id = req.params.id;
+
       const autorEncontrado = await autor.findById(id);
-      res.status(200).json(autorEncontrado);
+
+      if (autorEncontrado !== null) {
+        res.status(200).json(autorEncontrado);
+      } else {
+        next(new NaoEncontrado("Id do autor não encontrado!"));
+      }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - falha ao buscar livro!` });
+      next(error);
     }
   }
 
   /* requsição de cadastro de dados */
-  static async cadastrarAutor(req, res) {
+  static async cadastrarAutor(req, res, next) {
     try {
       const novoAutor = await autor.create(req.body);
       res.status(201).json({ message: "Criado com sucesso", autor: novoAutor });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - falha ao cadastrar livro!` });
+      next(error);
     }
   }
 
   /* requisição de edição de dados */
-  static async AtualizarAutor(req, res) {
+  static async AtualizarAutor(req, res, next) {
     try {
       const id = req.params.id;
-      await autor.findByIdAndUpdate(id, req.body);
-      res.status(200).json({ message: "Livro atualizado" });
+      const autorResultado = await autor.findByIdAndUpdate(id, req.body);
+
+      if (autorResultado !== null) {
+        res.status(200).json({ message: "Livro atualizado" });
+      } else {
+        next(new NaoEncontrado("Id do autor não localizado"));
+      }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - falha na atualização!` });
+      next(error);
     }
   }
 
   /* requisição de deletar de dados */
-  static async deletarAutor(req, res) {
+  static async deletarAutor(req, res, next) {
     try {
       const id = req.params.id;
-      await autor.findByIdAndDelete(id, req.body);
-      res.status(200).json({ message: "Livro deletado com sucesso!" });
+      const autorResultado = await autor.findByIdAndDelete(id, req.body);
+
+      if (autorResultado !== null) {
+        res.status(200).json({ message: "Livro deletado com sucesso!" });
+      } else {
+        next(new NaoEncontrado("Id do autor não localizado!"));
+      }
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: `${error.message} - falha ao excluir o livro!` });
+      next(error);
     }
   }
 }
